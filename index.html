@@ -1,0 +1,178 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime-Ratespiel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .game-container {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .image-container {
+            position: relative;
+            width: 80vw;
+            max-width: 400px;
+            height: auto;
+            aspect-ratio: 1 / 1;
+            margin: 20px auto;
+            overflow: hidden;
+            border: 2px solid #333;
+            border-radius: 10px;
+        }
+        .partial-image, .full-image {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .partial-image {
+            clip-path: circle(30% at 50% 50%);
+        }
+        .full-image {
+            display: none;
+        }
+        input {
+            padding: 15px;
+            margin: 10px;
+            width: 80%;
+            max-width: 300px;
+            font-size: 18px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            margin: 15px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+        @media (max-width: 1024px) {
+            .game-container {
+                padding: 10px;
+            }
+            .image-container {
+                width: 90vw;
+                max-width: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Anime-Ratespiel</h1>
+        <p>Beobachte die Details des Bildes und rate, welcher Anime-Charakter es ist!</p>
+        <div class="image-container">
+            <img id="partialImage" class="partial-image" src="" alt="Teilbild">
+            <img id="fullImage" class="full-image" src="" alt="Vollbild">
+        </div>
+        <input type="text" id="guessInput" placeholder="Charakternamen eingeben">
+        <button onclick="revealFullImage()">Gesamtbild anzeigen</button>
+        <button onclick="nextCharacter()">Nächste Frage</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // Anime-Charaktere: Namen und Bild-URLs
+        const characters = [
+            { name: "Luffy", partial: "https://via.placeholder.com/300?text=Luffy+Teil", full: "https://via.placeholder.com/300?text=Luffy+Voll" },
+            { name: "Naruto", partial: "https://via.placeholder.com/300?text=Naruto+Teil", full: "https://via.placeholder.com/300?text=Naruto+Voll" },
+            { name: "Goku", partial: "https://via.placeholder.com/300?text=Goku+Teil", full: "https://via.placeholder.com/300?text=Goku+Voll" }
+        ];
+
+        let currentCharacter;
+
+        function loadCharacter() {
+            currentCharacter = characters[Math.floor(Math.random() * characters.length)];
+            document.getElementById('partialImage').src = currentCharacter.partial;
+            document.getElementById('fullImage').src = currentCharacter.full;
+            document.getElementById('fullImage').style.display = 'none';
+            document.getElementById('partialImage').style.display = 'block';
+            document.getElementById('guessInput').value = '';
+            document.getElementById('result').textContent = '';
+        }
+
+        function revealFullImage() {
+            const guess = document.getElementById('guessInput').value.trim();
+            document.getElementById('partialImage').style.display = 'none';
+            document.getElementById('fullImage').style.display = 'block';
+            const result = document.getElementById('result');
+            if (guess.toLowerCase() === currentCharacter.name.toLowerCase()) {
+                result.textContent = `Glückwunsch, du hast richtig geraten! Das ist ${currentCharacter.name}!`;
+                result.style.color = 'green';
+            } else {
+                result.textContent = `Falsch geraten! Das ist ${currentCharacter.name}!`;
+                result.style.color = 'red';
+            }
+        }
+
+        function nextCharacter() {
+            loadCharacter();
+        }
+
+        window.onload = loadCharacter;
+    </script>
+</body>
+</html>
