@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -79,18 +40,8 @@
             top: 0;
             left: 0;
         }
-        .partial-image {
-            clip-path: circle(30% at 50% 50%);
-        }
         .full-image {
             display: none;
-        }
-        input {
-            padding: 15px;
-            margin: 10px;
-            width: 80%;
-            max-width: 300px;
-            font-size: 18px;
         }
         button {
             padding: 15px 30px;
@@ -123,12 +74,11 @@
 <body>
     <div class="game-container">
         <h1>Anime-Ratespiel</h1>
-        <p>Beobachte die Details des Bildes und rate, welcher Anime-Charakter es ist!</p>
+        <p>Beobachte das Detailbild und klicke, um den Charakter zu enthüllen!</p>
         <div class="image-container">
-            <img id="partialImage" class="partial-image" src="" alt="Teilbild">
+            <img id="partialImage" class="partial-image" src="" alt="Detailbild">
             <img id="fullImage" class="full-image" src="" alt="Vollbild">
         </div>
-        <input type="text" id="guessInput" placeholder="Charakternamen eingeben">
         <button onclick="revealFullImage()">Gesamtbild anzeigen</button>
         <button onclick="nextCharacter()">Nächste Frage</button>
         <div id="result"></div>
@@ -138,8 +88,8 @@
         // Anime-Charaktere: Namen und Bild-URLs
         const characters = [
             { name: "Naruto", partial: "https://i.imgur.com/oCdo5GU.jpeg", full: "https://i.imgur.com/WdUK4Ds.jpeg" },
-            { name: "Naruto", partial: "https://i.imgur.com/oCdo5GU.jpeg", full: "https://i.imgur.com/WdUK4Ds.jpeg" },
-            { name: "Naruto", partial: "https://i.imgur.com/oCdo5GU.jpeg", full: "https://i.imgur.com/WdUK4Ds.jpeg" }
+            { name: "Luffy", partial: "https://i.imgur.com/vIBRoEP.jpeg", full: "https://i.imgur.com/xdukZT8.jpeg" },
+            { name: "Pain", partial: "https://i.imgur.com/yq2eica.jpeg", full: "https://i.imgur.com/MVX2t12.jpeg" }
         ];
 
         let currentCharacter;
@@ -148,24 +98,17 @@
             currentCharacter = characters[Math.floor(Math.random() * characters.length)];
             document.getElementById('partialImage').src = currentCharacter.partial;
             document.getElementById('fullImage').src = currentCharacter.full;
-            document.getElementById('fullImage').style.display = 'none';
             document.getElementById('partialImage').style.display = 'block';
-            document.getElementById('guessInput').value = '';
+            document.getElementById('fullImage').style.display = 'none';
             document.getElementById('result').textContent = '';
         }
 
         function revealFullImage() {
-            const guess = document.getElementById('guessInput').value.trim();
             document.getElementById('partialImage').style.display = 'none';
             document.getElementById('fullImage').style.display = 'block';
             const result = document.getElementById('result');
-            if (guess.toLowerCase() === currentCharacter.name.toLowerCase()) {
-                result.textContent = `Glückwunsch, du hast richtig geraten! Das ist ${currentCharacter.name}!`;
-                result.style.color = 'green';
-            } else {
-                result.textContent = `Falsch geraten! Das ist ${currentCharacter.name}!`;
-                result.style.color = 'red';
-            }
+            result.textContent = `Das ist ${currentCharacter.name}!`;
+            result.style.color = 'green';
         }
 
         function nextCharacter() {
