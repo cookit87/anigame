@@ -24,21 +24,21 @@
         .header-container {
             display: flex;
             align-items: center;
-            justify-content: space-between; /* 左右分布，确保Logo和标题对齐边框 */
-            width: calc(80vw + 4px); /* 匹配图片容器宽度，包含2px边框 */
-            max-width: 404px; /* 匹配图片容器最大宽度，包含边框 */
-            margin: 0 auto 20px auto; /* 居中，与图片容器一致 */
+            justify-content: space-between;
+            width: calc(80vw + 4px);
+            max-width: 404px;
+            margin: 0 auto 20px auto;
         }
         .logo {
-            width: 140px; /* 上一版本尺寸 */
-            height: 63px; /* 保持20:9比例 */
-            margin-right: 15px; /* Logo与标题间距 */
-            margin-left: 0; /* 确保左边缘对齐 */
+            width: 140px;
+            height: 63px;
+            margin-right: 15px;
+            margin-left: 0;
         }
         h1 {
-            font-size: 24px; /* 上一版本字体大小 */
-            text-align: right; /* 标题右对齐 */
-            margin: 0; /* 移除默认外边距 */
+            font-size: 24px;
+            text-align: right;
+            margin: 0;
         }
         .image-container {
             position: relative;
@@ -96,25 +96,25 @@
                 max-width: 350px;
             }
             .header-container {
-                width: calc(90vw + 4px); /* 匹配图片容器宽度，包含边框 */
-                max-width: 354px; /* 匹配图片容器最大宽度，包含边框 */
+                width: calc(90vw + 4px);
+                max-width: 354px;
                 margin-bottom: 15px;
             }
             .logo {
-                width: 112px; /* 上一版本尺寸 */
-                height: 50.4px; /* 保持20:9比例 */
-                margin-right: 12px; /* 上一版本间距 */
+                width: 112px;
+                height: 50.4px;
+                margin-right: 12px;
                 margin-left: 0;
             }
             h1 {
-                font-size: 20px; /* 上一版本字体大小 */
+                font-size: 20px;
             }
         }
         @media (max-width: 600px) {
             .header-container {
                 flex-direction: column;
                 align-items: center;
-                width: auto; /* 垂直布局时取消宽度限制 */
+                width: auto;
                 max-width: none;
             }
             .logo {
@@ -122,7 +122,7 @@
                 margin-bottom: 10px;
             }
             h1 {
-                text-align: center; /* 垂直布局时标题居中 */
+                text-align: center;
             }
         }
     </style>
@@ -144,7 +144,6 @@
     </div>
 
     <script>
-        // Anime-Charaktere: Namen und Bild-URLs
         const characters = [
             { name: "Naruto", partial: "https://i.imgur.com/oCdo5GU.jpeg", full: "https://i.imgur.com/tNhvVX3.jpeg" },
             { name: "Luffy", partial: "https://i.imgur.com/vIBRoEP.jpeg", full: "https://i.imgur.com/RLDRgRO.jpeg" },
@@ -175,7 +174,7 @@
             { name: "Sailor Jupiter", partial: "https://i.imgur.com/dmtHUw7.jpeg", full: "https://i.imgur.com/A157wRA.jpeg" },
             { name: "Goku", partial: "https://i.imgur.com/VNHrmWa.jpeg", full: "https://i.imgur.com/xwH6eiT.jpeg" },
             { name: "Trunks", partial: "https://i.imgur.com/OfxKJBq.jpeg", full: "https://i.imgur.com/RKfGihs.jpeg" },
-            { name: "Vegeta",academy: "https://i.imgur.com/5je7LQz.jpeg", full: "https://i.imgur.com/kMgX30F.jpeg" },
+            { name: "Vegeta", partial: "https://i.imgur.com/5je7LQz.jpeg", full: "https://i.imgur.com/kMgX30F.jpeg" },
             { name: "Son Goten", partial: "https://i.imgur.com/nN3rscQ.jpeg", full: "https://i.imgur.com/eO7nkII.jpeg" },
             { name: "Gabimaru", partial: "https://i.imgur.com/j7nJ07Y.jpeg", full: "https://i.imgur.com/wC72TaL.jpeg" },
             { name: "Fuchi Yamada", partial: "https://i.imgur.com/qtza8MB.jpeg", full: "https://i.imgur.com/eySEwAc.jpeg" },
@@ -209,10 +208,28 @@
             { name: "Frieren", partial: "https://i.imgur.com/TJWFZs4.jpeg", full: "https://i.imgur.com/OLojRw1.jpeg" }
         ];
 
+        let characterQueue = [];
         let currentCharacter;
 
+        // Fisher-Yates 洗牌算法
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // 初始化或重新填充角色队列
+        function refillQueue() {
+            characterQueue = shuffle([...characters]);
+        }
+
         function loadCharacter() {
-            currentCharacter = characters[Math.floor(Math.random() * characters.length)];
+            if (characterQueue.length === 0) {
+                refillQueue();
+            }
+            currentCharacter = characterQueue.pop();
             document.getElementById('partialImage').src = currentCharacter.partial;
             document.getElementById('fullImage').src = currentCharacter.full;
             document.getElementById('partialImage').style.display = 'block';
