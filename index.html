@@ -21,10 +21,24 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* 左右分布，确保Logo和标题对齐边框 */
+            width: calc(80vw + 4px); /* 匹配图片容器宽度，包含2px边框 */
+            max-width: 404px; /* 匹配图片容器最大宽度，包含边框 */
+            margin: 0 auto 20px auto; /* 居中，与图片容器一致 */
+        }
         .logo {
-            width: 200px;
-            height: 90px; /* 20:9 ratio */
-            margin-bottom: 20px;
+            width: 140px; /* 上一版本尺寸 */
+            height: 63px; /* 保持20:9比例 */
+            margin-right: 15px; /* Logo与标题间距 */
+            margin-left: 0; /* 确保左边缘对齐 */
+        }
+        h1 {
+            font-size: 24px; /* 上一版本字体大小 */
+            text-align: right; /* 标题右对齐 */
+            margin: 0; /* 移除默认外边距 */
         }
         .image-container {
             position: relative;
@@ -81,17 +95,44 @@
                 width: 90vw;
                 max-width: 350px;
             }
+            .header-container {
+                width: calc(90vw + 4px); /* 匹配图片容器宽度，包含边框 */
+                max-width: 354px; /* 匹配图片容器最大宽度，包含边框 */
+                margin-bottom: 15px;
+            }
             .logo {
-                width: 240px;
-                height: 108px; /* Maintain 20:9 ratio */
+                width: 112px; /* 上一版本尺寸 */
+                height: 50.4px; /* 保持20:9比例 */
+                margin-right: 12px; /* 上一版本间距 */
+                margin-left: 0;
+            }
+            h1 {
+                font-size: 20px; /* 上一版本字体大小 */
+            }
+        }
+        @media (max-width: 600px) {
+            .header-container {
+                flex-direction: column;
+                align-items: center;
+                width: auto; /* 垂直布局时取消宽度限制 */
+                max-width: none;
+            }
+            .logo {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            h1 {
+                text-align: center; /* 垂直布局时标题居中 */
             }
         }
     </style>
 </head>
 <body>
     <div class="game-container">
-        <img src="https://anime-mura.berlin/wp-content/uploads/2025/03/cropped-%E9%95%BF%E6%96%B9%E5%BD%A2logo.png" alt="Logo" class="logo">
-        <h1>Anime-Ratespiel</h1>
+        <div class="header-container">
+            <img src="https://i.imgur.com/UFPhvh9.jpeg" alt="Logo" class="logo">
+            <h1>Anime-Ratespiel</h1>
+        </div>
         <p>Beobachte das Detailbild und klicke, um den Charakter zu enthüllen!</p>
         <div class="image-container">
             <img id="partialImage" class="partial-image" src="" alt="Detailbild">
@@ -108,7 +149,6 @@
             { name: "Naruto", partial: "https://i.imgur.com/oCdo5GU.jpeg", full: "https://i.imgur.com/WdUK4Ds.jpeg" },
             { name: "Luffy", partial: "https://i.imgur.com/vIBRoEP.jpeg", full: "https://i.imgur.com/xdukZT8.jpeg" },
             { name: "Pain", partial: "https://i.imgur.com/yq2eica.jpeg", full: "https://i.imgur.com/MVX2t12.jpeg" },
-            // Placeholder entries for 57 more characters
             { name: "Goku", partial: "https://via.placeholder.com/400x400.png?text=Goku+Partial", full: "https://via.placeholder.com/400x400.png?text=Goku+Full" },
             { name: "Ichigo", partial: "https://via.placeholder.com/400x400.png?text=Ichigo+Partial", full: "https://via.placeholder.com/400x400.png?text=Ichigo+Full" },
             { name: "Saitama", partial: "https://via.placeholder.com/400x400.png?text=Saitama+Partial", full: "https://via.placeholder.com/400x400.png?text=Saitama+Full" },
@@ -135,7 +175,7 @@
             { name: "Zenitsu", partial: "https://via.placeholder.com/400x400.png?text=Zenitsu+Partial", full: "https://via.placeholder.com/400x400.png?text=Zenitsu+Full" },
             { name: "Yusuke", partial: "https://via.placeholder.com/400x400.png?text=Yusuke+Partial", full: "https://via.placeholder.com/400x400.png?text=Yusuke+Full" },
             { name: "Hiei", partial: "https://via.placeholder.com/400x400.png?text=Hiei+Partial", full: "https://via.placeholder.com/400x400.png?text=Hiei+Full" },
-            { name: "Kurama", partial: "https://via.placeholder.com/400x400.png?text=Kurama+Partial", full: "https://via.placeholder.com/400x400.png?text=Kurama+Full" },
+            { name: "Kurama",academy: "https://via.placeholder.com/400x400.png?text=Kurama+Partial", full: "https://via.placeholder.com/400x400.png?text=Kurama+Full" },
             { name: "Saber", partial: "https://via.placeholder.com/400x400.png?text=Saber+Partial", full: "https://via.placeholder.com/400x400.png?text=Saber+Full" },
             { name: "Shirou", partial: "https://via.placeholder.com/400x400.png?text=Shirou+Partial", full: "https://via.placeholder.com/400x400.png?text=Shirou+Full" },
             { name: "Rin", partial: "https://via.placeholder.com/400x400.png?text=Rin+Partial", full: "https://via.placeholder.com/400x400.png?text=Rin+Full" },
