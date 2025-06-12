@@ -21,6 +21,11 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
+        .logo {
+            width: 200px;
+            height: 90px; /* 20:9 ratio */
+            margin-bottom: 20px;
+        }
         .image-container {
             position: relative;
             width: 80vw;
@@ -48,13 +53,21 @@
             font-size: 18px;
             margin: 15px;
             cursor: pointer;
-            background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 5px;
         }
-        button:hover {
-            background-color: #45a049;
+        #revealButton {
+            background-color: #c3332b;
+        }
+        #revealButton:hover {
+            background-color: #a82a24;
+        }
+        #nextButton {
+            background-color: #313131;
+        }
+        #nextButton:hover {
+            background-color: #252525;
         }
         #result {
             font-size: 18px;
@@ -68,19 +81,24 @@
                 width: 90vw;
                 max-width: 350px;
             }
+            .logo {
+                width: 160px;
+                height: 72px; /* Maintain 20:9 ratio */
+            }
         }
     </style>
 </head>
 <body>
     <div class="game-container">
+        <img src="https://via.placeholder.com/200x90.png?text=Your+Logo" alt="Logo" class="logo">
         <h1>Anime-Ratespiel</h1>
         <p>Beobachte das Detailbild und klicke, um den Charakter zu enthüllen!</p>
         <div class="image-container">
             <img id="partialImage" class="partial-image" src="" alt="Detailbild">
             <img id="fullImage" class="full-image" src="" alt="Vollbild">
         </div>
-        <button onclick="revealFullImage()">Gesamtbild anzeigen</button>
-        <button onclick="nextCharacter()">Nächste Frage</button>
+        <button id="revealButton" onclick="revealFullImage()">Gesamtbild anzeigen</button>
+        <button id="nextButton" onclick="nextCharacter()">Nächste Frage</button>
         <div id="result"></div>
     </div>
 
@@ -89,7 +107,66 @@
         const characters = [
             { name: "Naruto", partial: "https://i.imgur.com/oCdo5GU.jpeg", full: "https://i.imgur.com/WdUK4Ds.jpeg" },
             { name: "Luffy", partial: "https://i.imgur.com/vIBRoEP.jpeg", full: "https://i.imgur.com/xdukZT8.jpeg" },
-            { name: "Pain", partial: "https://i.imgur.com/yq2eica.jpeg", full: "https://i.imgur.com/MVX2t12.jpeg" }
+            { name: "Pain", partial: "https://i.imgur.com/yq2eica.jpeg", full: "https://i.imgur.com/MVX2t12.jpeg" },
+            // Placeholder entries for 57 more characters
+            { name: "Goku", partial: "https://via.placeholder.com/400x400.png?text=Goku+Partial", full: "https://via.placeholder.com/400x400.png?text=Goku+Full" },
+            { name: "Ichigo", partial: "https://via.placeholder.com/400x400.png?text=Ichigo+Partial", full: "https://via.placeholder.com/400x400.png?text=Ichigo+Full" },
+            { name: "Saitama", partial: "https://via.placeholder.com/400x400.png?text=Saitama+Partial", full: "https://via.placeholder.com/400x400.png?text=Saitama+Full" },
+            { name: "Eren", partial: "https://via.placeholder.com/400x400.png?text=Eren+Partial", full: "https://via.placeholder.com/400x400.png?text=Eren+Full" },
+            { name: "Levi", partial: "https://via.placeholder.com/400x400.png?text=Levi+Partial", full: "https://via.placeholder.com/400x400.png?text=Levi+Full" },
+            { name: "Mikasa", partial: "https://via.placeholder.com/400x400.png?text=Mikasa+Partial", full: "https://via.placeholder.com/400x400.png?text=Mikasa+Full" },
+            { name: "Natsu", partial: "https://via.placeholder.com/400x400.png?text=Natsu+Partial", full: "https://via.placeholder.com/400x400.png?text=Natsu+Full" },
+            { name: "Lucy", partial: "https://via.placeholder.com/400x400.png?text=Lucy+Partial", full: "https://via.placeholder.com/400x400.png?text=Lucy+Full" },
+            { name: "Sasuke", partial: "https://via.placeholder.com/400x400.png?text=Sasuke+Partial", full: "https://via.placeholder.com/400x400.png?text=Sasuke+Full" },
+            { name: "Sakura", partial: "https://via.placeholder.com/400x400.png?text=Sakura+Partial", full: "https://via.placeholder.com/400x400.png?text=Sakura+Full" },
+            { name: "Kakashi", partial: "https://via.placeholder.com/400x400.png?text=Kakashi+Partial", full: "https://via.placeholder.com/400x400.png?text=Kakashi+Full" },
+            { name: "Zoro", partial: "https://via.placeholder.com/400x400.png?text=Zoro+Partial", full: "https://via.placeholder.com/400x400.png?text=Zoro+Full" },
+            { name: "Nami", partial: "https://via.placeholder.com/400x400.png?text=Nami+Partial", full: "https://via.placeholder.com/400x400.png?text=Nami+Full" },
+            { name: "Sanji", partial: "https://via.placeholder.com/400x400.png?text=Sanji+Partial", full: "https://via.placeholder.com/400x400.png?text=Sanji+Full" },
+            { name: "Light", partial: "https://via.placeholder.com/400x400.png?text=Light+Partial", full: "https://via.placeholder.com/400x400.png?text=Light+Full" },
+            { name: "L", partial: "https://via.placeholder.com/400x400.png?text=L+Partial", full: "https://via.placeholder.com/400x400.png?text=L+Full" },
+            { name: "Edward", partial: "https://via.placeholder.com/400x400.png?text=Edward+Partial", full: "https://via.placeholder.com/400x400.png?text=Edward+Full" },
+            { name: "Alphonse", partial: "https://via.placeholder.com/400x400.png?text=Alphonse+Partial", full: "https://via.placeholder.com/400x400.png?text=Alphonse+Full" },
+            { name: "Gon", partial: "https://via.placeholder.com/400x400.png?text=Gon+Partial", full: "https://via.placeholder.com/400x400.png?text=Gon+Full" },
+            { name: "Killua", partial: "https://via.placeholder.com/400x400.png?text=Killua+Partial", full: "https://via.placeholder.com/400x400.png?text=Killua+Full" },
+            { name: "Tanjiro", partial: "https://via.placeholder.com/400x400.png?text=Tanjiro+Partial", full: "https://via.placeholder.com/400x400.png?text=Tanjiro+Full" },
+            { name: "Nezuko", partial: "https://via.placeholder.com/400x400.png?text=Nezuko+Partial", full: "https://via.placeholder.com/400x400.png?text=Nezuko+Full" },
+            { name: "Inosuke", partial: "https://via.placeholder.com/400x400.png?text=Inosuke+Partial", full: "https://via.placeholder.com/400x400.png?text=Inosuke+Full" },
+            { name: "Zenitsu", partial: "https://via.placeholder.com/400x400.png?text=Zenitsu+Partial", full: "https://via.placeholder.com/400x400.png?text=Zenitsu+Full" },
+            { name: "Yusuke", partial: "https://via.placeholder.com/400x400.png?text=Yusuke+Partial", full: "https://via.placeholder.com/400x400.png?text=Yusuke+Full" },
+            { name: "Hiei", partial: "https://via.placeholder.com/400x400.png?text=Hiei+Partial", full: "https://via.placeholder.com/400x400.png?text=Hiei+Full" },
+            { name: "Kurama", partial: "https://via.placeholder.com/400x400.png?text=Kurama+Partial", full: "https://via.placeholder.com/400x400.png?text=Kurama+Full" },
+            { name: "Saber", partial: "https://via.placeholder.com/400x400.png?text=Saber+Partial", full: "https://via.placeholder.com/400x400.png?text=Saber+Full" },
+            { name: "Shirou", partial: "https://via.placeholder.com/400x400.png?text=Shirou+Partial", full: "https://via.placeholder.com/400x400.png?text=Shirou+Full" },
+            { name: "Rin", partial: "https://via.placeholder.com/400x400.png?text=Rin+Partial", full: "https://via.placeholder.com/400x400.png?text=Rin+Full" },
+            { name: "Deku", partial: "https://via.placeholder.com/400x400.png?text=Deku+Partial", full: "https://via.placeholder.com/400x400.png?text=Deku+Full" },
+            { name: "Bakugo", partial: "https://via.placeholder.com/400x400.png?text=Bakugo+Partial", full: "https://via.placeholder.com/400x400.png?text=Bakugo+Full" },
+            { name: "Todoroki", partial: "https://via.placeholder.com/400x400.png?text=Todoroki+Partial", full: "https://via.placeholder.com/400x400.png?text=Todoroki+Full" },
+            { name: "Asta", partial: "https://via.placeholder.com/400x400.png?text=Asta+Partial", full: "https://via.placeholder.com/400x400.png?text=Asta+Full" },
+            { name: "Yuno", partial: "https://via.placeholder.com/400x400.png?text=Yuno+Partial", full: "https://via.placeholder.com/400x400.png?text=Yuno+Full" },
+            { name: "Noelle", partial: "https://via.placeholder.com/400x400.png?text=Noelle+Partial", full: "https://via.placeholder.com/400x400.png?text=Noelle+Full" },
+            { name: "Guts", partial: "https://via.placeholder.com/400x400.png?text=Guts+Partial", full: "https://via.placeholder.com/400x400.png?text=Guts+Full" },
+            { name: "Griffith", partial: "https://via.placeholder.com/400x400.png?text=Griffith+Partial", full: "https://via.placeholder.com/400x400.png?text=Griffith+Full" },
+            { name: "Casca", partial: "https://via.placeholder.com/400x400.png?text=Casca+Partial", full: "https://via.placeholder.com/400x400.png?text=Casca+Full" },
+            { name: "Jotaro", partial: "https://via.placeholder.com/400x400.png?text=Jotaro+Partial", full: "https://via.placeholder.com/400x400.png?text=Jotaro+Full" },
+            { name: "Dio", partial: "https://via.placeholder.com/400x400.png?text=Dio+Partial", full: "https://via.placeholder.com/400x400.png?text=Dio+Full" },
+            { name: "Joseph", partial: "https://via.placeholder.com/400x400.png?text=Joseph+Partial", full: "https://via.placeholder.com/400x400.png?text=Joseph+Full" },
+            { name: "Yugi", partial: "https://via.placeholder.com/400x400.png?text=Yugi+Partial", full: "https://via.placeholder.com/400x400.png?text=Yugi+Full" },
+            { name: "Kaiba", partial: "https://via.placeholder.com/400x400.png?text=Kaiba+Partial", full: "https://via.placeholder.com/400x400.png?text=Kaiba+Full" },
+            { name: "Ash", partial: "https://via.placeholder.com/400x400.png?text=Ash+Partial", full: "https://via.placeholder.com/400x400.png?text=Ash+Full" },
+            { name: "Maka", partial: "https://via.placeholder.com/400x400.png?text=Maka+Partial", full: "https://via.placeholder.com/400x400.png?text=Maka+Full" },
+            { name: "Soul", partial: "https://via.placeholder.com/400x400.png?text=Soul+Partial", full: "https://via.placeholder.com/400x400.png?text=Soul+Full" },
+            { name: "Kirito", partial: "https://via.placeholder.com/400x400.png?text=Kirito+Partial", full: "https://via.placeholder.com/400x400.png?text=Kirito+Full" },
+            { name: "Asuna", partial: "https://via.placeholder.com/400x400.png?text=Asuna+Partial", full: "https://via.placeholder.com/400x400.png?text=Asuna+Full" },
+            { name: "Rimuru", partial: "https://via.placeholder.com/400x400.png?text=Rimuru+Partial", full: "https://via.placeholder.com/400x400.png?text=Rimuru+Full" },
+            { name: "Milim", partial: "https://via.placeholder.com/400x400.png?text=Milim+Partial", full: "https://via.placeholder.com/400x400.png?text=Milim+Full" },
+            { name: "Shigeo", partial: "https://via.placeholder.com/400x400.png?text=Shigeo+Partial", full: "https://via.placeholder.com/400x400.png?text=Shigeo+Full" },
+            { name: "Reigen", partial: "https://via.placeholder.com/400x400.png?text=Reigen+Partial", full: "https://via.placeholder.com/400x400.png?text=Reigen+Full" },
+            { name: "Senku", partial: "https://via.placeholder.com/400x400.png?text=Senku+Partial", full: "https://via.placeholder.com/400x400.png?text=Senku+Full" },
+            { name: "Taiju", partial: "https://via.placeholder.com/400x400.png?text=Taiju+Partial", full: "https://via.placeholder.com/400x400.png?text=Taiju+Full" },
+            { name: "Yuzuriha", partial: "https://via.placeholder.com/400x400.png?text=Yuzuriha+Partial", full: "https://via.placeholder.com/400x400.png?text=Yuzuriha+Full" },
+            { name: "Spike", partial: "https://via.placeholder.com/400x400.png?text=Spike+Partial", full: "https://via.placeholder.com/400x400.png?text=Spike+Full" },
+            { name: "Faye", partial: "https://via.placeholder.com/400x400.png?text=Faye+Partial", full: "https://via.placeholder.com/400x400.png?text=Faye+Full" }
         ];
 
         let currentCharacter;
